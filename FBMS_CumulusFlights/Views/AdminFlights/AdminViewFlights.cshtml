@@ -1,0 +1,206 @@
+﻿@model FBMS_CumulusFlights.ViewModel.AdminViewFlightsViewModel
+@using FBMS_CumulusFlights.Models.Enums
+
+
+@{
+    Layout = "_AdminLayout";
+}
+
+<style>
+    .view-flights-container {
+        max-width: 1500px;
+        margin: 0 auto;
+        padding: 1rem;
+        margin-left: 1rem;
+    }
+
+    .flight-filter {
+        background: #fff;
+        padding: 2rem;
+        border-radius: 12px;
+        margin: 0 auto 1rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        width: 100%;
+        max-width: 1200px;
+    }
+
+    .view-flights-table {
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+        margin: 1rem auto;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+
+    .table {
+        width: 40%;
+        margin: 0;
+    }
+
+        .table th,
+        .table td {
+            padding: 1rem 2rem;
+            font-size: 1.05rem;
+            text-align: left;
+        }
+
+    .btn {
+        padding: 0.75rem 2rem;
+        font-size: 1.1rem;
+    }
+
+    h2 {
+        margin-bottom: 2rem;
+    }
+
+    .btn-sm {
+        padding: 0.5rem 1rem !important;
+        font-size: 0.9rem !important;
+        min-width: 90px;
+    }
+
+    .d-flex.gap-2 {
+        gap: 0.5rem;
+    }
+
+    .form-inline {
+        display: inline-block;
+        margin: 0 2px;
+    }
+</style>
+
+<div class="container-fluid view-flights-container">
+    <h2>View Approved Flights</h2>
+    <div class="flight-filter">
+        <form method="get" class="row justify-content-center">
+            <div class="col-lg-3 col-md-6 mb-3">
+                <label class="form-label">Flight Number</label>
+                <input type="text" name="FlightNumber" class="form-control" placeholder="Enter Flight Number" value="@Model.SearchModel.FlightNumber" />
+            </div>
+            <div class="col-lg-3 col-md-6 mb-3">
+                <label class="form-label">From (City/Airport Code/Name)</label>
+                <input type="text" name="From" class="form-control" placeholder="Departure Airport" value="@Model.SearchModel.From" />
+            </div>
+            <div class="col-lg-3 col-md-6 mb-3">
+                <label class="form-label">To (City/Airport Code/Name)</label>
+                <input type="text" name="To" class="form-control" placeholder="Destination Airport" value="@Model.SearchModel.To" />
+            </div>
+            <div class="col-lg-3 col-md-6 mb-3">
+                <label class="form-label">Max Price (PHP)</label>
+                <input type="number" name="MaxPrice" class="form-control" placeholder="Enter Max Price" value="@Model.SearchModel.MaxPrice" min="0" />
+            </div>
+            <div class="col-lg-3 col-md-6 mb-3">
+                <label class="form-label">Departure Date</label>
+                <input type="date" name="DepartureDate" class="form-control" value="@Model.SearchModel.DepartureDate?.ToString("yyyy-MM-dd")" />
+            </div>
+            <div class="col-lg-3 col-md-6 mb-3">
+                <label class="form-label">Departure Time Range</label>
+                <div class="input-group">
+                    <input type="time" name="DepartureTimeStart" class="form-control" placeholder="Start Time" value="@Model.SearchModel.DepartureTimeStart?.ToString(@"hh\:mm")" />
+                    <span class="input-group-text">to</span>
+                    <input type="time" name="DepartureTimeEnd" class="form-control" placeholder="End Time" value="@Model.SearchModel.DepartureTimeEnd?.ToString(@"hh\:mm")" />
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-3">
+                <label class="form-label">Operational Status</label>
+                <select name="OperationalStatus" class="form-control">
+                    <option value="">Select Status</option>
+                    <option value="InProgress" selected="@(Model.SearchModel.OperationalStatus == OperationalStatus.InProgress)">In Progress</option>
+                    <option value="Boarding" selected="@(Model.SearchModel.OperationalStatus == OperationalStatus.Boarding)">Boarding</option>
+                    <option value="Departed" selected="@(Model.SearchModel.OperationalStatus == OperationalStatus.Departed)">Departed</option>
+                    <option value="Arrived" selected="@(Model.SearchModel.OperationalStatus == OperationalStatus.Arrived)">Arrived</option>
+                    <option value="Completed" selected="@(Model.SearchModel.OperationalStatus == OperationalStatus.Completed)">Completed</option>
+                    <option value="Delayed" selected="@(Model.SearchModel.OperationalStatus == OperationalStatus.Delayed)">Delayed</option>
+                    <option value="Cancelled" selected="@(Model.SearchModel.OperationalStatus == OperationalStatus.Cancelled)">Cancelled</option>
+                </select>
+            </div>
+            <div class="col-lg-3 col-md-6 align-self-end mb-3">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search me-2"></i>Search Flights
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="view-flights-table">
+        <table class="table table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Flight #</th>
+                    <th>Departure</th>
+                    <th>Destination</th>
+                    <th>Departure Date</th>
+                    <th>Flight Duration (hrs)</th>
+                    <th>Distance (km)</th>
+                    <th>Price</th>
+                    <th>Operational Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var flight in Model.Flights)
+                {
+                    <tr>
+                        <td>@flight.FlightNumber</td>
+                        <td>
+                            @flight.OriginAirportName (@flight.OriginAirportCode)<br>
+                            <small>@flight.OriginCity</small>
+                        </td>
+                        <td>
+                            @flight.DestinationAirportName (@flight.DestinationAirportCode)<br>
+                            <small>@flight.DestinationCity</small>
+                        </td>
+                        <td>@flight.DepartureDate.ToString("MMM dd, yyyy")</td>
+                        <td>@flight.FlightDuration.ToString("N2")</td>
+                        <td>@flight.DistanceKm.ToString("N0")</td>
+                        <td>₱@flight.Price.ToString("N2")</td>
+                        <td>@flight.OperationalStatus</td>
+                        <td>
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#updateModal-@flight.FlightId">
+                                    <i class="fas fa-edit"></i> Update
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@foreach (var flight in Model.Flights)
+{
+    <div class="modal fade" id="updateModal-@flight.FlightId" tabindex="-1" aria-labelledby="updateModalLabel-@flight.FlightId" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateModalLabel-@flight.FlightId">Update Flight @flight.FlightNumber</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" asp-action="UpdateOperationalStatus">
+                        <input type="hidden" name="id" value="@flight.FlightId" />
+                        @Html.AntiForgeryToken() <div class="col-lg-3 col-md-6 mb-3">
+                            <label class="form-label">Operational Status</label> 
+                            <select name="status" class="form-control"> 
+                                @foreach (OperationalStatus status in Enum.GetValues(typeof(OperationalStatus)))
+                                {
+                                    var isSelected = flight.OperationalStatus == status;
+                                    <option value="@status" selected="@isSelected">@status</option>
+                                } </select>
+
+
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">New Departure Date and Time</label>
+                            <input type="datetime-local" name="newDepartureDateTime" class="form-control" value="@flight.DepartureDate.ToString("yyyy-MM-ddTHH:mm")" />
+                        </div>
+                        <button type="submit" class="btn btn-warning">Update</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,12 @@
+﻿@{
+    var userType = User.Claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
+
+    if (userType == "Admin" || userType == "SuperAdmin")
+    {
+        Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+}

@@ -1,0 +1,229 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Profile";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+}
+
+
+<style>
+    /* Profile Page Styling */
+    .profile-page {
+        background: rgba(243, 244, 246, 0.3);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 2rem;
+    }
+
+    .profile-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        padding: 2.5rem;
+        width: 100%;
+        max-width: 500px;
+        text-align: center;
+        position: relative;
+    }
+
+        .profile-card h3 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+        }
+
+    .form-group {
+        text-align: left;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #2d3748;
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        background-color: white;
+    }
+
+        .form-control:disabled {
+            background-color: #f8f9fa;
+            color: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .form-control:focus {
+            border-color: #4299e1;
+            box-shadow: 0 0 8px rgba(66, 153, 225, 0.3);
+        }
+
+    .btn-primary {
+        width: 100%;
+        padding: 0.9rem;
+        background-color: #4299e1;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-top: 1rem;
+        display: none; /* Initially hidden */
+    }
+
+        .btn-primary:hover {
+            background-color: #3182ce;
+        }
+
+    .btn-edit {
+        background-color: #ffc107;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-edit:hover {
+            background-color: #e0a800;
+        }
+
+        .btn-edit i {
+            font-size: 1.25rem;
+            color: #fff;
+        }
+
+    .text-danger {
+        font-size: 0.9rem;
+        color: #e53e3e;
+    }
+</style>
+
+<div class="profile-page">
+    <div class="profile-card">
+        <!-- Edit Button (Top-Right) -->
+        <button id="edit-button" type="button" class="btn-edit">
+            <i class="fas fa-edit"></i>
+        </button>
+
+        <h3>@ViewData["Title"]</h3>
+        <partial name="_StatusMessage" for="StatusMessage" />
+
+        <form id="profile-form" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+            <!-- Profile Icon and Username -->
+            <div class="text-center mb-4">
+                <i class="fas fa-user-circle fa-5x text-primary mb-3"></i>
+                <h1>@User.Identity?.Name</h1>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.FirstName" class="form-label">First Name</label>
+                <input asp-for="Input.FirstName" class="form-control" disabled />
+                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.LastName" class="form-label">Last Name</label>
+                <input asp-for="Input.LastName" class="form-control" disabled />
+                <span asp-validation-for="Input.LastName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.DateOfBirth" class="form-label">Date of Birth</label>
+                <input asp-for="Input.DateOfBirth" class="form-control" type="date" disabled />
+                <span asp-validation-for="Input.DateOfBirth" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.Gender" class="form-label">Gender</label>
+                <select asp-for="Input.Gender" class="form-control" disabled>
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+                <span asp-validation-for="Input.Gender" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.Nationality" class="form-label">Nationality</label>
+                <input asp-for="Input.Nationality" class="form-control" disabled />
+                <span asp-validation-for="Input.Nationality" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.Address" class="form-label">Address</label>
+                <input asp-for="Input.Address" class="form-control" disabled />
+                <span asp-validation-for="Input.Address" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.PhoneNumber" class="form-label">Phone Number</label>
+                <input asp-for="Input.PhoneNumber" class="form-control" disabled />
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+
+            <button id="update-profile-button" type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const editButton = document.getElementById("edit-button");
+            const saveButton = document.getElementById("update-profile-button");
+            const inputs = document.querySelectorAll("#profile-form input, #profile-form select");
+
+            editButton.addEventListener("click", function () {
+                let isEditing = !inputs[0].disabled;
+
+                inputs.forEach(input => {
+                    input.disabled = isEditing;
+                });
+
+                saveButton.style.display = isEditing ? "none" : "block";
+
+                editButton.innerHTML = isEditing
+                    ? '<i class="fas fa-edit"></i>'
+                    : '<i class="fas fa-times"></i>';
+            });
+
+            const statusMessage = '@Model.StatusMessage';
+            if (statusMessage.trim() !== "") {
+                Swal.fire({
+                    title: "Success!",
+                    text: statusMessage,
+                    icon: "success",
+                    confirmButtonText: "OK"
+                });
+            }
+        });
+    </script>
+}

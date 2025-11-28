@@ -1,0 +1,188 @@
+﻿@model FBMS_CumulusFlights.ViewModels.CheckoutViewModel
+@{
+    ViewData["Title"] = "Checkout";
+}
+
+<div class="checkout-container flex justify-between p-6">
+    <!-- Left Section: Payment Methods -->
+    <div class="payment-methods w-1/3 p-6 bg-white rounded-lg shadow-md ml-4 hidden md:block">
+        <h2 class="text-2xl font-bold mb-6">Payment Methods</h2>
+
+        <!-- PayPal Button Container -->
+        <div id="paypal-button-container"></div>
+    </div>
+
+    <!-- Right Section: Booking Summary -->
+    <div class="booking-summary w-2/3 p-6 ml-6 bg-white rounded-lg shadow-md">
+        <h2 class="text-3xl font-bold mb-6">Booking Summary</h2>
+
+        <!-- Flight Information -->
+        <div class="flight-info mb-6">
+            <h3 class="text-xl font-semibold">Flight Details</h3>
+            <p>Flight Number: <span class="font-medium">@Model.Flight.FlightNumber</span></p>
+            <p>Departure: <span class="font-medium">@Model.Flight.OriginCity (@Model.Flight.OriginAirportCode)</span></p>
+            <p>Arrival: <span class="font-medium">@Model.Flight.DestinationCity (@Model.Flight.DestinationAirportCode)</span></p>
+            <p>Travel Date: <span class="font-medium">@Model.Flight.DepartureDate.ToString("MMM dd, yyyy")</span></p>
+        </div>
+
+        <!-- Passenger Information -->
+        <div class="passenger-info mb-6">
+            <h3 class="text-xl font-semibold">Passengers</h3>
+            <ul>
+                @foreach (var passenger in Model.Passengers)
+                {
+                    <li>@passenger.FirstName @passenger.LastName - <span class="font-medium">Seat: @passenger.SeatType @passenger.SeatClass</span></li>
+                }
+            </ul>
+        </div>
+
+        <!-- Baggage Information -->
+        <div class="baggage-info mb-6">
+            <h3 class="text-xl font-semibold">Baggage</h3>
+            <p>Total Baggage Weight: <span class="font-medium">@Model.Passengers.Sum(p => p.BaggageWeight) kg</span></p>
+            <p>Total Baggage Fee: <span class="font-medium">₱@Model.Passengers.Sum(p => p.BaggageFee).ToString("N2")</span></p>
+        </div>
+
+        <!-- Seat Information -->
+        <div class="seat-info mb-6">
+            <h3 class="text-xl font-semibold">Seat Fees</h3>
+            <p>Additional Seat Fee: <span class="font-medium">₱@Model.Passengers.Sum(p => p.SeatFee).ToString("N2")</span></p>
+        </div>
+
+        <!-- Total Amount -->
+        <div class="total-amount mb-6">
+            <h3 class="text-xl font-semibold">Total Amount</h3>
+            <p><span class="font-medium">₱@Model.TotalAmount.ToString("N2")</span></p>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Add anti-forgery token -->
+@Html.AntiForgeryToken()
+
+<script>
+    const exchangeRatePHPToUSD = 55.0; // 1 USD = 55 PHP
+    var totalAmountPHP = @Model.TotalAmount; // Total amount in PHP
+    var totalAmountUSD = (totalAmountPHP / exchangeRatePHPToUSD).toFixed(2);
+
+    // PayPal Buttons integration
+    paypal.Buttons({
+        createOrder: function (data, actions) {
+            return actions.order.create({
+                purchase_units: [{
+                    amount: {
+                        value: totalAmountUSD// Ensure it's a string with two decimal places
+                    }
+                }]
+            }).then(function (orderId) {
+                return orderId;
+            });
+        },
+        onApprove: function (data, actions) {
+            return actions.order.capture().then(function (details) {
+                fetch('/Booking/ConfirmCheckout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify({
+                        PayPalOrderId: data.orderID,
+                        Flight: { FlightId: @Model.Flight.FlightId },
+                        Passengers: @Html.Raw(Json.Serialize(Model.Passengers)),
+                        TotalAmount: totalAmountUSD
+                    })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                title: 'Transaction Successful!',
+                                text: 'Your payment has been processed successfully. Redirecting to your dashboard...',
+                                icon: 'success',
+                                showCancelButton: false,
+                                confirmButtonText: 'Download Receipt',
+                                timer: 7000, // Automatically close after 3 seconds
+                                timerProgressBar: true
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.open(`/Booking/DownloadCombinedPdf/${data.reservationId}`, '_blank');
+                                }
+                                // Redirect after 3 seconds
+                                window.location.href = '/Home/UserDashboard';
+                            });
+                        } else {
+                            Swal.fire('Error', data.message || 'An error occurred during the booking process.', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire('Error', 'An error occurred while processing your payment.', 'error');
+                    });
+            });
+        },
+        onError: function (err) {
+            console.error('PayPal Checkout onError', err);
+            Swal.fire('Error', 'An error occurred during the payment process', 'error');
+        }
+    }).render('#paypal-button-container');
+</script>
+
+<style>
+    html, body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    main {
+        flex-grow: 1;
+    }
+    /* Flexbox container for left and right columns */
+    .checkout-container {
+        flex-grow: 1;
+        display: flex;
+        justify-content: space-between;
+        gap: 2rem;
+        padding: 2rem;
+    }
+
+    /* Style for payment method box */
+    .payment-methods {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Booking Summary Section */
+    .booking-summary {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        flex: 1;
+    }
+
+        .booking-summary h2 {
+            font-size: 2rem; /* Increased font size */
+        }
+
+        .booking-summary h3 {
+            font-size: 1.5rem; /* Increased font size */
+        }
+
+        .booking-summary p {
+            margin: 0.5rem 0;
+            font-size: 1rem; /* Increased font size */
+        }
+
+    .total-amount p {
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
+
+
+  
+</style>

@@ -1,0 +1,120 @@
+﻿
+@model FBMS_CumulusFlights.ViewModel.FlightViewModel
+@using FBMS_CumulusFlights.Models.Enums
+
+
+@{
+    Layout = "_AdminLayout";
+}
+
+<style>
+    .create-flight-container {
+        max-width: 1500px;
+        margin: 50px auto; /* Added margin to move the form down */
+        padding: 2rem;
+        margin-left: 3rem;
+    }
+
+    .create-flight-form {
+        background: #fff;
+        padding: 2rem;
+        border-radius: 12px;
+        margin: 0 auto 2.5rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        width: 100%;
+        max-width: 1400px;
+
+    }
+
+    .btn {
+        padding: 0.75rem 2rem;
+        font-size: 1.1rem;
+    }
+
+    h2 {
+        margin-bottom: 2rem;
+    }
+
+    .mb-3 {
+        margin-bottom: 1.5rem; /* Increased spacing between input fields */
+    }
+
+    .submit-button-container {
+        text-align: center; /* Center the submit button */
+        margin-top: 1.5rem; /* Add some space above the button */
+    }
+</style>
+<div class="container-fluid create-flight-container">
+    <h2>Create New Flight</h2>
+    <div class="create-flight-form">
+        <form id="createFlightForm" method="post" asp-action="CreateFlight">
+            @Html.AntiForgeryToken()
+
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-3">
+                    <label class="form-label">Origin City</label>
+                    <input type="text" name="OriginCity" class="form-control" placeholder="Enter Origin City" required />
+                </div>
+                <div class="col-lg-4 col-md-6 mb-3">
+                    <label class="form-label">Origin Airport Code</label>
+                    <input type="text" name="OriginAirportCode" class="form-control" placeholder="Enter Origin Airport Code" required />
+                </div>
+                <div class="col-lg-4 col-md-6 mb-3">
+                    <label class="form-label">Origin Airport Name</label>
+                    <input type="text" name="OriginAirportName" class="form-control" placeholder="Enter Origin Airport Name" />
+                </div>
+                <div class="col-lg-4 col-md-6 mb-3">
+                    <label class="form-label">Destination City</label>
+                    <input type="text" name="DestinationCity" class="form-control" placeholder="Enter Destination City" required />
+                </div>
+                <div class="col-lg-4 col-md-6 mb-3">
+                    <label class="form-label">Destination Airport Code</label>
+                    <input type="text" name="DestinationAirportCode" class="form-control" placeholder="Enter Destination Airport Code" required />
+                </div>
+                <div class="col-lg-4 col-md-6 mb-3">
+                    <label class="form-label">Destination Airport Name</label>
+                    <input type="text" name="DestinationAirportName" class="form-control" placeholder="Enter Destination Airport Name" />
+                </div>
+                <div class="col-lg-4 col-md-6 mb-3">
+                    <label class="form-label">Departure Date</label>
+                    <input type="datetime-local" name="DepartureDate" class="form-control" required />
+                </div>
+                <div class="col-lg-4 col-md-6 mb-3">
+                    <label class="form-label">Distance (km)</label>
+                    <input type="number" name="DistanceKm" class="form-control" placeholder="Enter Distance in km" required />
+                </div>
+                <div class="col-lg-4 col-md-6 mb-3">
+                    <label class="form-label">Price</label>
+                    <input type="number" step="0.01" name="Price" class="form-control" placeholder="Enter Price" required />
+                </div>
+            </div>
+
+            <div class="submit-button-container">
+                <button type="submit" class="btn btn-primary" id="submitBtn">Create Flight</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.getElementById('createFlightForm').addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        // Show SweetAlert confirmation dialog
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to create this flight?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, create it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // If confirmed, submit the form
+                this.submit();
+            }
+        });
+    });
+</script>

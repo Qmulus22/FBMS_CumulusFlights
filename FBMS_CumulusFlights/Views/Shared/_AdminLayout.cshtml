@@ -1,0 +1,298 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using FBMS_CumulusFlights.Models
+@using Cumulus_Flights.Models.Enums
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    var user = await UserManager.GetUserAsync(User);
+    var isSuperAdmin = user?.UserType == UserTypeEnum.SuperAdmin;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Cumulus Flights Admin</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    @section HeaderScripts {
+        <script src="https://www.paypal.com/sdk/js?client-id=Adek5x6NtvUCIUE_Y7zWIs2CRPD9Rvhr5ZCqtBWIEml2OfGFSCCV9RzAACa9nEXhhribhwal6alo6nJp"></script>
+    }
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+        }
+
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            background: #1E3A8A;
+            color: white;
+            padding: 20px;
+            width: 275px; /* Adjusted width */
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            overflow-y: auto; /* Allow scrolling if content overflows */
+        }
+
+            .sidebar .nav-item {
+                width: 100%;
+                margin-bottom: 20px; /* Increased spacing */
+            }
+
+            .sidebar .nav-link {
+                color: white;
+                text-decoration: none;
+                display: flex;
+                align-items: center;
+                padding: 12px 15px; /* Adjusted padding */
+                border-radius: 5px;
+                transition: background 0.3s;
+                width: 100%;
+                justify-content: flex-start; /* Left align */
+            }
+
+                .sidebar .nav-link i {
+                    margin-right: 12px; /* Adjusted spacing */
+                }
+
+            .sidebar .collapse {
+                padding-left: 20px;
+            }
+
+            .sidebar .dropdown-item {
+                color: white;
+                padding: 10px 20px;
+                display: block;
+                border-radius: 5px;
+            }
+
+                .sidebar .nav-link.active,
+                .sidebar .dropdown-item.active {
+                    background: #3B82F6;
+                    color: white;
+                }
+
+                .sidebar .nav-link:hover,
+                .sidebar .dropdown-item:hover {
+                    background: #3B82F6;
+                    color: white;
+                }
+
+        .main-content {
+            margin-left: 275px; /* Adjusted for sidebar width */
+            padding: 20px;
+            transition: margin-left 0.3s;
+        }
+
+        .header {
+            background: #1E3A8A;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+            .header h2 {
+                margin: 0;
+            }
+
+        .logout-button, .profile-button {
+            background: none;
+            border: none;
+            color: white;
+            text-align: left;
+            padding: 12px 20px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            border-radius: 5px;
+        }
+
+            .logout-button:hover, .profile-button:hover {
+                background: #3B82F6;
+            }
+
+        .bottom-align {
+            position: relative;
+            width: 100%;
+            bottom: 0;
+        }
+
+        .logo-img {
+            width: 80px; /* Adjust size as needed */
+        }
+    </style>
+</head>
+<body>
+    <div class="d-flex">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="text-center mb-4">
+                <img src="/Images/CompanyLogo.png" alt="Cumulus Flights Logo" class="logo-img">
+                <h4 class="mt-2">Cumulus Flights</h4>
+            </div>
+
+            <!-- Dashboard -->
+            <div class="nav-item mt-4">
+                <a href="/Admin/Dashboard" class="nav-link"><i class="fas fa-chart-line"></i> Dashboard</a>
+            </div>
+
+            <!-- Reports -->
+            <div class="nav-item">
+                <a href="/Admin/Report" class="nav-link"><i class="fas fa-chart-pie"></i> Reports</a>
+            </div>
+
+
+            <!-- Flight Management -->
+            <div class="nav-item">
+                <a class="nav-link dropdown-toggle" data-bs-toggle="collapse" href="#flightManagement">
+                    <i class="fas fa-plane"></i> Flight Management
+                </a>
+                <div id="flightManagement" class="collapse">
+                    <a href="/AdminFlights/AdminViewFlights" class="dropdown-item"><i class="fas fa-plane-departure"></i> View Flights</a>
+
+                    @if (isSuperAdmin)
+                    {
+                        <a href="/AdminFlights/ApproveFlights" class="dropdown-item"><i class="fas fa-plane-arrival"></i> Offer Flights</a>
+                    }
+
+                    <a href="/AdminFlights/AdminAddCreateFlights" class="dropdown-item"><i class="fas fa-plane"></i> <i class="fas fa-plus"></i> Create Flights</a>
+                </div>
+            </div>
+
+            <!-- Booking Management -->
+            <div class="nav-item">
+                <a class="nav-link dropdown-toggle" data-bs-toggle="collapse" href="#bookingManagement">
+                    <i class="fas fa-book"></i> Booking Management
+                </a>
+                <div id="bookingManagement" class="collapse">
+                    <a href="/AdminReservations/AdminViewReservations" class="dropdown-item"><i class="fas fa-eye"></i> View Reservations</a>
+                </div>
+            </div>
+
+            <!-- User Management -->
+            <div class="nav-item">
+                <a class="nav-link dropdown-toggle" data-bs-toggle="collapse" href="#userManagement">
+                    <i class="fas fa-users"></i> User Management
+                </a>
+                <div id="userManagement" class="collapse">
+                    <a href="/Admin/ManageUsers" class="dropdown-item"><i class="fas fa-user-cog"></i> Manage Users</a>
+
+                    @if (isSuperAdmin)
+                    {
+                        <a href="/Admin/AssignRole" class="dropdown-item"><i class="fas fa-user-tag"></i> Assign Roles</a>
+                    }
+                </div>
+            </div>
+
+      
+
+@*             <!-- Settings -->
+            <div class="nav-item">
+                <a href="/Settings/Index" class="nav-link"><i class="fas fa-cogs"></i> Settings</a>
+            </div> *@
+
+
+@*             <!-- Database Management -->
+            <div class="nav-item">
+                <a class="nav-link dropdown-toggle" data-bs-toggle="collapse" href="#dbManagement">
+                    <i class="fas fa-database"></i> Database Management
+                </a>
+                <div id="dbManagement" class="collapse">
+                    <a href="/Admin/BackupDatabase" class="dropdown-item"><i class="fas fa-download"></i> Backup Database</a>
+                    <a href="/Admin/RestoreDatabase" class="dropdown-item"><i class="fas fa-upload"></i> Restore Database</a>
+                </div>
+            </div> *@
+
+
+<div class="nav-item">
+    <a asp-area="Identity" asp-page="/Account/Manage/Index" 
+       style="color: white; text-decoration: none; display: flex; align-items: center; padding: 12px 15px; 
+              border-radius: 5px; transition: background 0.3s; width: 100%; justify-content: flex-start;">
+        <i class="fas fa-user" style="margin-right: 12px;"></i> Profile
+    </a>
+</div>
+
+
+
+
+
+            <!-- Logout Button with SweetAlert Confirmation (Styled Like Nav Items) -->
+            <div class="nav-item">
+                <form id="logout-form" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl='@Url.Action("Index", "Home", new { area = "" })' method="post">
+                    <button type="button" id="logout-btn" class="nav-link">
+                        <i class="fas fa-sign-out-alt"></i> Log Out
+                    </button>
+                </form>
+            </div>
+            
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-content">
+           
+            <main class="mt-3">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+    <script>
+         document.addEventListener("DOMContentLoaded", function () {
+        // Remove the click event handler that prevents default behavior
+        // Keep only the active class management if needed
+        let currentUrl = window.location.pathname;
+        
+        // Remove active class from all nav links first
+        let allNavLinks = document.querySelectorAll(".nav-link, .dropdown-item");
+        allNavLinks.forEach(link => link.classList.remove("active"));
+
+        // Add active class to current page link
+        allNavLinks.forEach(link => {
+            if (link.getAttribute('href') === currentUrl) {
+                link.classList.add("active");
+                // Also activate parent dropdowns if needed
+                let parentCollapse = link.closest('.collapse');
+                if (parentCollapse) {
+                    parentCollapse.classList.add('show');
+                }
+            }
+        });
+
+
+       // SweetAlert Logout Confirmation
+        document.getElementById("logout-btn").addEventListener("click", function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You will be logged out.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Yes, log out"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById("logout-form").submit();
+                }
+            });
+        });
+    });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

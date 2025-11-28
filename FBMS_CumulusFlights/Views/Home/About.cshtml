@@ -1,0 +1,93 @@
+﻿@{
+    ViewData["Title"] = "About Us - Cumulus Flights";
+}
+
+<!-- This layout will automatically pull the nav bar and footer from _Layout.cshtml -->
+<!-- About Us Page Content -->
+<div class="bg-gray-100" >
+
+    <!-- Added background image slot -->
+    <!-- Set the background color of the entire body -->
+    <div class="container mx-auto py-16 px-10">
+        <div class="text-center mb-12">
+            <!-- About Cumulus Flights Title -->
+            <h1 class="text-5xl font-bold text-blue-600 mb-6">About Cumulus Flights</h1> <!-- Bolded Title -->
+        </div>
+
+        <div class="flex mb-12">
+            <!-- Left: Brief History or Background -->
+            <div class="w-full md:w-1/2 pr-6">
+                <p class="text-lg text-gray-700 mb-4 text-justify">
+                    Cumulus Flights started with a vision to make air travel booking simple, affordable, and stress-free.
+                    Our platform allows users to book, manage, and track their flights with ease.
+                </p>
+                <p class="text-lg text-gray-700 mb-4 text-justify">
+                    Over the years, we have expanded our services to offer more options for our customers, while maintaining
+                    the highest standards of reliability and efficiency in the travel industry.
+                </p>
+            </div>
+
+            <!-- Right: Placeholder for Image -->
+            <div class="w-full md:w-1/2 pl-6">
+                <img src="/Images/airport-terminal (1).jpg" alt="Company Image" class="w-full h-64 object-cover rounded-lg shadow-lg" /> <!-- Adjusted size -->
+            </div>
+        </div>
+
+        <div class="flex mb-12">
+            <!-- Right: About the System (System Description) -->
+            <div class="w-full md:w-1/2 pr-6">
+                <p class="text-lg text-gray-700 mb-4 text-justify">
+                    At Cumulus Flights, we offer a seamless booking experience that ensures customer satisfaction at every
+                    stage of their journey. Our system is designed to be intuitive, fast, and secure, providing you with
+                    everything you need to plan your trip efficiently.
+                </p>
+                <p class="text-lg text-gray-700 mb-4 text-justify">
+                    From flight search to seat selection, payment, and management, we are your travel companion every step
+                    of the way. We aim to make the travel experience smooth and stress-free, allowing you to focus on what
+                    matters most — your journey.
+                </p>
+            </div>
+
+            <!-- Left: Slot for Another Image -->
+            <div class="w-full md:w-1/2 pl-6">
+                <img src="/Images/daniel-klein-rf7lVmfwupU-unsplash.jpg" alt="System Image" class="w-full h-64 object-cover rounded-lg shadow-lg" /> <!-- Adjusted size -->
+            </div>
+        </div>
+
+        <!-- Services Section -->
+        <section id="services" class="py-16 bg-gray-100">
+            <div class="container mx-auto text-center">
+                <h2 class="text-3xl font-bold mb-8">Our Services</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <i class="fas fa-plane-departure text-4xl mb-4 text-blue-500"></i>
+                        <h3 class="text-xl font-semibold mb-2">Flight Booking</h3>
+                        <p class="text-justify">
+                            With Cumulus Flights, booking your next adventure is just a few clicks away. Our simple and intuitive system
+                            lets you search and compare a wide variety of flights to match your preferences. Whether you are flying for
+                            business or leisure, we have you covered.
+                        </p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <i class="fas fa-map-marked-alt text-4xl mb-4 text-blue-500"></i>
+                        <h3 class="text-xl font-semibold mb-2">Global Destinations</h3>
+                        <p class="text-justify">
+                            Choose from thousands of destinations worldwide. Whether you're dreaming of a tropical beach or a bustling
+                            city, our system makes it easier than ever to find the perfect place for your next trip. Explore new destinations
+                            and create memories that last a lifetime.
+                        </p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <i class="fas fa-user-circle text-4xl mb-4 text-blue-500"></i>
+                        <h3 class="text-xl font-semibold mb-2">Customer Support</h3>
+                        <p class="text-justify">
+                            Our dedicated customer support team is available to assist you with any inquiries or issues. Whether you need
+                            help with booking, flight changes, or just general assistance, we're here to provide prompt and effective support
+                            throughout your journey.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>

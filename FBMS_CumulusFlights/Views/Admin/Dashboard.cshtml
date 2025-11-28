@@ -1,0 +1,244 @@
+﻿@{
+    Layout = "_AdminLayout";
+    ViewBag.Title = "Admin Dashboard";
+}
+
+<!-- Dashboard Styles -->
+<style>
+    .dashboard-container {
+        padding: 20px;
+        background-color: #f5f6fa;
+    }
+
+    .summary-card {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .metric-number {
+        font-size: 2rem;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    .metric-title {
+        color: #7f8c8d;
+        font-size: 0.9rem;
+    }
+
+    .chart-container {
+        background: white;
+        border-radius: 10px;
+        padding: 15px;
+        margin: 10px 0;
+        height: 400px;
+    }
+
+    .recent-bookings {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 20px;
+    }
+
+    .status-badge {
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+    }
+
+    .confirmed {
+        background: #e8f7ee;
+        color: #1abc9c;
+    }
+
+    .pending {
+        background: #fff4e5;
+        color: #f39c12;
+    }
+
+    .cancelled {
+        background: #ffe5e5;
+        color: #e74c3c;
+    }
+</style>
+
+<div class="dashboard-container">
+    <div class="row">
+        <!-- Key Metrics -->
+        <div class="col-md-3">
+            <div class="summary-card">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-plane-departure fa-2x text-primary mr-3"></i>
+                    <div>
+                        <div class="metric-number">@Model.TotalBookings</div>
+                        <div class="metric-title">Total Bookings</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="summary-card">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-calendar-alt fa-2x text-success mr-3"></i>
+                    <div>
+                        <div class="metric-number">@Model.UpcomingFlightsCount</div>
+                        <div class="metric-title">Upcoming Flights</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="summary-card">
+                <div class="d-flex align-items-center">
+                    <span class="text-warning mr-3" style="font-size: 2em;">₱</span>
+                    <div>
+                        <div class="metric-number">@Model.TotalRevenue</div>
+                        <div class="metric-title">Total Revenue</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="summary-card">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-exclamation-circle fa-2x text-danger mr-3"></i>
+                    <div>
+                        <div class="metric-number">@Model.PendingFlights</div>
+                        <div class="metric-title">Pending Flights</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="row mt-4">
+        <div class="col-md-8">
+            <!-- Flight Status Chart -->
+            <div class="chart-container">
+                <h5>Booking Statistics</h5>
+                <canvas id="bookingChart"></canvas>
+            </div>
+
+            <!-- Recent Bookings Table -->
+            <div class="recent-bookings">
+                <h5>Recent Bookings</h5>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>Customer</th>
+                            <th>Flight</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var booking in Model.RecentBookings)
+                        {
+                            <tr>
+                                <td>#@booking.ReservationId</td>
+                                <td>@booking.User.FirstName @booking.User.LastName</td>
+                                <td>@booking.Flight.FlightNumber (@booking.Flight.OriginAirportCode → @booking.Flight.DestinationAirportCode)</td>
+                                <td>@booking.ReservationDate.ToString("yyyy-MM-dd")</td>
+                                <td><span class="status-badge @booking.Status.ToString().ToLower()">@booking.Status</span></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <!-- Upcoming Flights -->
+            <div class="summary-card">
+                <h5>Upcoming Flights</h5>
+                <div class="list-group">
+                    @foreach (var flight in Model.UpcomingFlights)
+                    {
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6>@flight.FlightNumber</h6>
+                                    <small>@flight.OriginAirportCode → @flight.DestinationAirportCode</small>
+                                </div>
+                                <div class="text-right">
+                                    <div>@flight.DepartureDate.ToString("HH:mm")</div>
+                                    <small class="text-success">On Time</small>
+                                </div>
+                            </div>
+                        </a>
+                    }
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="summary-card mt-4">
+                <h5>Quick Actions</h5>
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <a href="@Url.Action("AdminAddCreateFlights", "AdminFlights")" class="btn btn-light btn-block">
+                            <i class="fas fa-plus-circle mr-2"></i>Add Flight
+                        </a>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <a href="@Url.Action("ApproveFlights", "AdminFlights")" class="btn btn-light btn-block">
+                            <i class="fas fa-check-circle mr-2"></i>Approve Flights
+                        </a>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <a href="@Url.Action("Report", "Admin")" class="btn btn-light btn-block">
+                            <i class="fas fa-chart-bar mr-2"></i>Reports
+                        </a>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <a href="@Url.Action("AdminViewReservations", "AdminReservations")" class="btn btn-light btn-block">
+                            <i class="fas fa-users mr-2"></i>View Reservations
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts for Charts -->
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Booking Statistics Chart
+        const ctx = document.getElementById('bookingChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Confirmed', 'Pending', 'Cancelled'],
+                datasets: [{
+                    label: 'Bookings',
+                    data: [@Model.ConfirmedBookings, @Model.PendingBookings, @Model.CancelledBookings],
+                    backgroundColor: [
+                        '#1abc9c',
+                        '#f39c12',
+                        '#e74c3c'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+}

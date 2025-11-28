@@ -1,0 +1,293 @@
+﻿@model List<FBMS_CumulusFlights.Models.ApplicationUser>
+@{
+    Layout = "_AdminLayout";
+}
+
+<style>
+    .view-users-container {
+        max-width: 1500px;
+        margin: 0 auto;
+        padding: 2rem;
+        margin-left: 3rem;
+    }
+
+    .users-filter {
+        background: #fff;
+        padding: 2rem;
+        border-radius: 12px;
+        margin: 0 auto 2.5rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        width: 100%;
+        max-width: 1400px;
+    }
+
+    .users-table {
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+        margin: 2.5rem auto;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+
+    .table th, .table td {
+        padding: 1rem 1rem;
+        font-size: 1.05rem;
+        text-align: left;
+    }
+
+    .view-icon {
+        font-size: 1.5rem;
+        cursor: pointer;
+        margin: 0 5px;
+        color: #007bff; /* Blue color for icons */
+    }
+
+    .view-icon:hover {
+        color: #0056b3; /* Darker blue on hover */
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+    }
+
+    .modal-content {
+        background-color: #fff;
+        margin: 5% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 700px; /* Increased width for better table fit */
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    .modal-content.card-style {
+        border-radius: 12px;
+        box-shadow: 0 6px 25px rgba(0,0,0,0.1);
+        max-width: 800px; /* Adjusted max-width */
+    }
+
+    .modal-header {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+
+    .modal-body {
+        max-height: 60vh; /* Limit height and add scrolling */
+        overflow-y: auto;
+    }
+
+    .modal-body p {
+        margin: 5px 0;
+    }
+
+    .modal-footer {
+        text-align: right;
+    }
+
+    .modal-footer button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .modal-footer button:hover {
+        background-color: #0056b3;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
+</style>
+
+<div class="container-fluid view-users-container">
+    <h2>Manage Users</h2>
+
+
+    <div class="users-filter">
+        <form method="get" class="row justify-content-center">
+            <div class="col-lg-3 col-md-6 mb-3">
+                <label class="form-label">Search by Name, Email, or Contact Number</label>
+                <input type="text" class="form-control" placeholder="Enter search term" name="searchTerm" />
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-3">
+                <label class="form-label">Status</label>
+                <select class="form-control" name="status">
+                    <option value="">All</option>
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                </select>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-3">
+                <label class="form-label">User Type</label>
+                <select class="form-control" name="userType">
+                    <option value="">All</option>
+                    <option value="Admin">Admin</option>
+                    <option value="NormalUser">Normal User</option>
+                    <option value="SuperAdmin">SuperAdmin</option>
+                </select>
+            </div>
+
+            <div class="col-lg-3 col-md-4 align-self-end mb-3">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search me-2"></i>Search Users
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="users-table">
+        <table class="table table-hover">
+            <thead class="thead-light">
+                <tr>
+                    <th>User ID</th>
+                    <th>Username</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Contact Number</th>
+                    <th>User Type</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td>@user.Id</td>
+                            <td>@user.UserName</td>
+                            <td>@user.FirstName @user.LastName</td>
+                            <td>@user.Email</td>
+                            <td>@user.PhoneNumber</td>
+                            <td>@user.UserType.ToString()</td>
+                            <td>@user.Status.ToString()</td>
+                            <td class="actions-cell">
+                                <i class="fas fa-eye view-icon" onclick="openUserDetailsModal('@user.Id')"></i>
+                                <i class="fas fa-list view-icon" onclick="openActivityLogsModal('@user.Id')"></i>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="8" class="text-center">No users found.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- User Details Modal -->
+<div class="modal" id="userDetailsModal">
+    <div class="modal-content card-style">
+        <div class="modal-header">User Details</div>
+        <div class="modal-body" id="userDetailsContent"></div>
+        <div class="modal-footer">
+            <button onclick="closeModal('userDetailsModal')">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- Activity Logs Modal -->
+<div class="modal" id="activityLogsModal">
+    <div class="modal-content card-style">
+        <div class="modal-header">Activity Logs</div>
+        <div class="modal-body" id="activityLogsContent">Loading logs...</div>
+        <div class="modal-footer">
+            <button onclick="closeModal('activityLogsModal')">Close</button>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function openUserDetailsModal(userId) {
+    fetch(`/Admin/GetUserDetails?userId=${userId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
+        .then(html => {
+            document.getElementById('userDetailsContent').innerHTML = html;
+            document.getElementById('userDetailsModal').style.display = "block";
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+}
+
+function openActivityLogsModal(userId) {
+    fetch(`/Admin/GetActivityLogs?userId=${userId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            let logsContent = data.length ?
+                `<table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Login Time</th>
+                            <th>Logout Time</th>
+                            <th>IP Address</th>
+                            <th>Successful</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.map(log => `
+                            <tr>
+                                <td>${new Date(log.loginTime).toLocaleString() || 'N/A'}</td>
+                                <td>${new Date(log.logoutTime).toLocaleString() || 'N/A'}</td>
+                                <td>${log.ipAddress || 'N/A'}</td>
+                                <td>${log.isSuccessful ? 'Yes' : 'No'}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>`
+                : '<p>No activity logs found.</p>';
+            document.getElementById('activityLogsContent').innerHTML = logsContent;
+            document.getElementById('activityLogsModal').style.display = "block";
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+}
+
+
+
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = "none";
+}
+
+
+
+</script>
+

@@ -1,0 +1,213 @@
+﻿@{
+    ViewBag.Title = "All Flights by Continent";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Assuming you have a shared layout
+}
+
+<!-- Ensure Tailwind CSS is included in your _Layout.cshtml -->
+<!-- Add this to your _Layout.cshtml if not already present -->
+<!--
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+-->
+
+<div class="container mx-auto px-4 space-y-10">
+    <br><br>
+    <!-- Map Section -->
+    <div class="space-y-8">
+    <div class="mb-8" style="height: 600px;">
+        <div id="flightMap" style="height: 100%; width: 100%; border-radius: 8px; overflow: hidden;"></div>
+        </div>
+    </div>
+
+    <!-- Flights Grouped by Continent -->
+    <div class="space-y-8">
+        <!-- North America -->
+        <div>
+            <h2 class="text-2xl font-bold mb-4">North America</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                @for (int i = 0; i < 4; i++)
+                {
+                    string destination = "";
+                    string travelDates = "";
+                    string price = "";
+
+                    switch (i)
+                    {
+                        case 0:
+                            destination = "New York (JFK) to Los Angeles (LAX)";
+                            travelDates = "10 May 2025 - 15 May 2025";
+                            price = "USD 250*";
+                            break;
+                        case 1:
+                            destination = "Miami (MIA) to Toronto (YYZ)";
+                            travelDates = "12 Jun 2025 - 14 Jun 2025";
+                            price = "USD 200*";
+                            break;
+                        case 2:
+                            destination = "San Francisco (SFO) to Vancouver (YVR)";
+                            travelDates = "20 Jul 2025 - 22 Jul 2025";
+                            price = "USD 180*";
+                            break;
+                        case 3:
+                            destination = "Chicago (ORD) to Mexico City (MEX)";
+                            travelDates = "05 Aug 2025 - 07 Aug 2025";
+                            price = "USD 220*";
+                            break;
+                    }
+
+                    <div class="bg-white rounded-lg shadow-md p-4">
+                        <h3 class="text-lg font-semibold mb-2">@destination</h3>
+                        <p class="text-sm text-gray-600 mb-2">@travelDates</p>
+                        <p class="text-lg font-bold text-blue-600">@price</p>
+                        <a href="/Booking/index?flightId=6" class="bg-blue-900 text-white py-2 px-4 rounded mt-4 inline-block">Book Now</a>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Europe -->
+        <div>
+            <h2 class="text-2xl font-bold mb-4">Europe</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                @for (int i = 0; i < 4; i++)
+                {
+                    string destination = "";
+                    string travelDates = "";
+                    string price = "";
+
+                    switch (i)
+                    {
+                        case 0:
+                            destination = "Paris (CDG) to Nice (NCE)";
+                            travelDates = "06 Apr 2025 - 08 Apr 2025";
+                            price = "EUR 120*";
+                            break;
+                        case 1:
+                            destination = "London (LHR) to Berlin (BER)";
+                            travelDates = "10 May 2025 - 15 May 2025";
+                            price = "EUR 200*";
+                            break;
+                        case 2:
+                            destination = "Rome (FCO) to Barcelona (BCN)";
+                            travelDates = "12 Jun 2025 - 14 Jun 2025";
+                            price = "EUR 150*";
+                            break;
+                        case 3:
+                            destination = "Amsterdam (AMS) to Vienna (VIE)";
+                            travelDates = "20 Jul 2025 - 22 Jul 2025";
+                            price = "EUR 180*";
+                            break;
+                    }
+
+                    <div class="bg-white rounded-lg shadow-md p-4">
+                        <h3 class="text-lg font-semibold mb-2">@destination</h3>
+                        <p class="text-sm text-gray-600 mb-2">@travelDates</p>
+                        <p class="text-lg font-bold text-blue-600">@price</p>
+                        <a href="/Booking/index?flightId=6" class="bg-blue-900 text-white py-2 px-4 rounded mt-4 inline-block">Book Now</a>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Asia -->
+        <div>
+            <h2 class="text-2xl font-bold mb-4">Asia</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                @for (int i = 0; i < 4; i++)
+                {
+                    string destination = "";
+                    string travelDates = "";
+                    string price = "";
+
+                    switch (i)
+                    {
+                        case 0:
+                            destination = "Tokyo (NRT) to Seoul (ICN)";
+                            travelDates = "06 Apr 2025 - 08 Apr 2025";
+                            price = "JPY 30,000*";
+                            break;
+                        case 1:
+                            destination = "Singapore (SIN) to Bangkok (BKK)";
+                            travelDates = "10 May 2025 - 15 May 2025";
+                            price = "SGD 180*";
+                            break;
+                        case 2:
+                            destination = "Hong Kong (HKG) to Taipei (TPE)";
+                            travelDates = "12 Jun 2025 - 14 Jun 2025";
+                            price = "HKD 1,200*";
+                            break;
+                        case 3:
+                            destination = "Delhi (DEL) to Mumbai (BOM)";
+                            travelDates = "20 Jul 2025 - 22 Jul 2025";
+                            price = "INR 5,000*";
+                            break;
+                    }
+
+                    <div class="bg-white rounded-lg shadow-md p-4">
+                        <h3 class="text-lg font-semibold mb-2">@destination</h3>
+                        <p class="text-sm text-gray-600 mb-2">@travelDates</p>
+                        <p class="text-lg font-bold text-blue-600">@price</p>
+                        <a href="/Booking/index?flightId=6" class="bg-blue-900 text-white py-2 px-4 rounded mt-4 inline-block">Book Now</a>
+                    </div>
+                }<br><br>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Include Leaflet.js for the map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        // Initialize the map
+        var map = L.map('flightMap').setView([30, 0], 2); // Centered on the world
+
+        // Add a tile layer (you can use OpenStreetMap or other providers)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            noWrap: true // Prevent the map from repeating
+        }).addTo(map);
+
+        // Example flight routes (replace with dynamic data from your backend)
+        var flights = [
+            {
+                from: { name: "New York (JFK)", lat: 40.6413, lon: -73.7781 },
+                to: { name: "Los Angeles (LAX)", lat: 33.9416, lon: -118.4085 },
+                airline: "Delta Airlines",
+                price: "USD 250*"
+            },
+            {
+                from: { name: "Paris (CDG)", lat: 49.0097, lon: 2.5479 },
+                to: { name: "Nice (NCE)", lat: 43.6584, lon: 7.2159 },
+                airline: "Air France",
+                price: "EUR 120*"
+            },
+            {
+                from: { name: "Tokyo (NRT)", lat: 35.7647, lon: 140.3864 },
+                to: { name: "Seoul (ICN)", lat: 37.4602, lon: 126.4407 },
+                airline: "Japan Airlines",
+                price: "JPY 30,000*"
+            }
+        ];
+
+        // Add markers and lines for each flight
+        flights.forEach(function (flight) {
+            var from = flight.from;
+            var to = flight.to;
+
+            // Add markers for departure and arrival
+            L.marker([from.lat, from.lon]).addTo(map)
+                .bindPopup(`<b>Departure:</b> ${from.name}<br><b>Airline:</b> ${flight.airline}`);
+
+            L.marker([to.lat, to.lon]).addTo(map)
+                .bindPopup(`<b>Arrival:</b> ${to.name}<br><b>Airline:</b> ${flight.airline}`);
+
+            // Add a line connecting departure and arrival
+            L.polyline([
+                [from.lat, from.lon],
+                [to.lat, to.lon]
+            ], { color: 'blue' }).addTo(map);
+        });
+    </script>
+}

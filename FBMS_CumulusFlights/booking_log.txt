@@ -1,0 +1,229 @@
+Incoming Model Data:
+{
+  "Flight": null,
+  "TotalAmount": 0.0,
+  "Passengers": null
+}
+
+Exception:
+An exception was thrown while attempting to evaluate a LINQ query parameter expression. See the inner exception for more information. To show additional information call 'DbContextOptionsBuilder.EnableSensitiveDataLogging'.
+
+Incoming Model Data:
+{
+  "Flight": null,
+  "TotalAmount": 0.0,
+  "Passengers": null
+}
+
+Exception:
+An exception was thrown while attempting to evaluate a LINQ query parameter expression. See the inner exception for more information. To show additional information call 'DbContextOptionsBuilder.EnableSensitiveDataLogging'.
+
+Incoming Model Data:
+{
+  "Flight": null,
+  "TotalAmount": 0.0,
+  "Passengers": null
+}
+
+Exception:
+An exception was thrown while attempting to evaluate a LINQ query parameter expression. See the inner exception for more information. To show additional information call 'DbContextOptionsBuilder.EnableSensitiveDataLogging'.
+
+Validation Error
+Invalid model data received
+
+[2025-03-05 15:50:40Z] Raw Request
+
+--------------------------------------------------
+[2025-03-05 15:50:40Z] Validation Failed
+Model null: False, Flight null: False, Passengers: 0
+--------------------------------------------------
+[2025-03-05 15:56:08Z] Raw Request
+
+--------------------------------------------------
+[2025-03-05 15:56:08Z] Validation Failed
+Model null: False, Flight null: False, Passengers: 0
+--------------------------------------------------
+[2025-03-05 15:59:55Z] Raw Request
+
+--------------------------------------------------
+[2025-03-05 15:59:55Z] Validation Failed
+Model null: False, Flight null: False, Passengers: 0
+--------------------------------------------------
+[2025-03-05 16:03:18Z] Raw Request
+
+--------------------------------------------------
+[2025-03-05 16:03:18Z] Validation Failed
+Model null: False, Flight null: False, Passengers: 0
+--------------------------------------------------
+[2025-03-05 16:07:39Z] Raw Request
+
+--------------------------------------------------
+[2025-03-05 16:07:39Z] Valid Model Received
+Flight ID: 15, Passengers: 1, Total: 12137.42
+--------------------------------------------------
+[2025-03-05 16:07:39Z] Transaction Error
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): The INSERT statement conflicted with the FOREIGN KEY constraint "FK_Reservations_AspNetUsers_UserId". The conflict occurred in database "db_FBMS_CumulusFlights", table "dbo.AspNetUsers", column 'Id'.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryHasMoreRows(Boolean& moreRows)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryReadInternal(Boolean setTimeout, Boolean& more)
+   at Microsoft.Data.SqlClient.SqlDataReader.ReadAsyncExecute(Task task, Object state)
+   at Microsoft.Data.SqlClient.SqlDataReader.InvokeAsyncCall[T](SqlDataReaderBaseAsyncCallContext`1 context)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeResultSetAsync(Int32 startCommandIndex, RelationalDataReader reader, CancellationToken cancellationToken)
+ClientConnectionId:08aea098-197b-4711-9cea-8e4285a7a5a6
+Error Number:547,State:0,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeResultSetAsync(Int32 startCommandIndex, RelationalDataReader reader, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeAsync(RelationalDataReader reader, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Cumulus_Flights.Controllers.BookingController.ConfirmCheckout(CheckoutViewModel model) in C:\Users\Dim\source\repos\FBMS_CumulusFlights\FBMS_CumulusFlights\Controllers\BookingController.cs:line 137
+--------------------------------------------------
+[2025-03-05 16:09:12Z] Raw Request
+
+--------------------------------------------------
+[2025-03-05 16:09:13Z] Valid Model Received
+Flight ID: 15, Passengers: 1, Total: 12137.42
+--------------------------------------------------
+[2025-03-05 16:09:13Z] Transaction Error
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): The INSERT statement conflicted with the FOREIGN KEY constraint "FK_Reservations_AspNetUsers_UserId". The conflict occurred in database "db_FBMS_CumulusFlights", table "dbo.AspNetUsers", column 'Id'.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryHasMoreRows(Boolean& moreRows)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryReadInternal(Boolean setTimeout, Boolean& more)
+   at Microsoft.Data.SqlClient.SqlDataReader.ReadAsyncExecute(Task task, Object state)
+   at Microsoft.Data.SqlClient.SqlDataReader.InvokeAsyncCall[T](SqlDataReaderBaseAsyncCallContext`1 context)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeResultSetAsync(Int32 startCommandIndex, RelationalDataReader reader, CancellationToken cancellationToken)
+ClientConnectionId:7a6c6f2c-0f29-42c1-a286-3c81dc8a6128
+Error Number:547,State:0,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeResultSetAsync(Int32 startCommandIndex, RelationalDataReader reader, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeAsync(RelationalDataReader reader, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Cumulus_Flights.Controllers.BookingController.ConfirmCheckout(CheckoutViewModel model) in C:\Users\Dim\source\repos\FBMS_CumulusFlights\FBMS_CumulusFlights\Controllers\BookingController.cs:line 137
+--------------------------------------------------
+[2025-03-05 16:42:15Z] Validation Failed
+Model null: False, Flight null: False, Passengers: 0
+--------------------------------------------------
+[2025-03-06 08:59:27Z] Validation Failed
+Model null: False, Flight null: False, Passengers: 0
+--------------------------------------------------
+[2025-03-06 12:40:03Z] Transaction Error
+System.Exception: Error capturing PayPal order: Created
+   at PayPalService.CaptureOrder(String orderId) in C:\Users\Dim\source\repos\FBMS_CumulusFlights\FBMS_CumulusFlights\Services\PayPalService.cs:line 63
+   at Cumulus_Flights.Controllers.BookingController.ConfirmCheckout(CheckoutViewModel model) in C:\Users\Dim\source\repos\FBMS_CumulusFlights\FBMS_CumulusFlights\Controllers\BookingController.cs:line 181
+--------------------------------------------------
+[2025-03-06 12:41:33Z] Transaction Error
+System.Exception: Error capturing PayPal order: Created
+   at PayPalService.CaptureOrder(String orderId) in C:\Users\Dim\source\repos\FBMS_CumulusFlights\FBMS_CumulusFlights\Services\PayPalService.cs:line 63
+   at Cumulus_Flights.Controllers.BookingController.ConfirmCheckout(CheckoutViewModel model) in C:\Users\Dim\source\repos\FBMS_CumulusFlights\FBMS_CumulusFlights\Controllers\BookingController.cs:line 181
+--------------------------------------------------
+[2025-03-06 12:43:50Z] Transaction Error
+System.Exception: Error capturing PayPal order: Created
+   at PayPalService.CaptureOrder(String orderId) in C:\Users\Dim\source\repos\FBMS_CumulusFlights\FBMS_CumulusFlights\Services\PayPalService.cs:line 63
+   at Cumulus_Flights.Controllers.BookingController.ConfirmCheckout(CheckoutViewModel model) in C:\Users\Dim\source\repos\FBMS_CumulusFlights\FBMS_CumulusFlights\Controllers\BookingController.cs:line 181
+--------------------------------------------------
+[2025-03-06 12:48:11Z] Transaction Error
+System.Exception: Error capturing PayPal order: Created
+   at PayPalService.CaptureOrder(String orderId) in C:\Users\Dim\source\repos\FBMS_CumulusFlights\FBMS_CumulusFlights\Services\PayPalService.cs:line 63
+   at Cumulus_Flights.Controllers.BookingController.ConfirmCheckout(CheckoutViewModel model) in C:\Users\Dim\source\repos\FBMS_CumulusFlights\FBMS_CumulusFlights\Controllers\BookingController.cs:line 181
+--------------------------------------------------
+[2025-03-06 13:07:27Z] Transaction Error
+System.Exception: Error capturing PayPal order: Created
+   at PayPalService.CaptureOrder(String orderId) in C:\Users\Dim\source\repos\FBMS_CumulusFlights\FBMS_CumulusFlights\Services\PayPalService.cs:line 67
+   at Cumulus_Flights.Controllers.BookingController.ConfirmCheckout(CheckoutViewModel model) in C:\Users\Dim\source\repos\FBMS_CumulusFlights\FBMS_CumulusFlights\Controllers\BookingController.cs:line 181
+--------------------------------------------------
+/////////////////////////////////////////////////////////////[2025-03-06 13:17:01Z] General Error
+System.Exception: Error capturing PayPal order: Created
+   at PayPalService.CaptureOrder(String orderId) in C:\Users\Dim\source\repos\FBMS_CumulusFlights\FBMS_CumulusFlights\Services\PayPalService.cs:line 67
+   at Cumulus_Flights.Controllers.BookingController.ConfirmCheckout(CheckoutViewModel model) in C:\Users\Dim\source\repos\FBMS_CumulusFlights\FBMS_CumulusFlights\Controllers\BookingController.cs:line 162
+--------------------------------------------------
+[2025-03-06 13:18:32Z] General Error
+System.Exception: Error capturing PayPal order: Created
+   at PayPalService.CaptureOrder(String orderId) in C:\Users\Dim\source\repos\FBMS_CumulusFlights\FBMS_CumulusFlights\Services\PayPalService.cs:line 67
+   at Cumulus_Flights.Controllers.BookingController.ConfirmCheckout(CheckoutViewModel model) in C:\Users\Dim\source\repos\FBMS_CumulusFlights\FBMS_CumulusFlights\Controllers\BookingController.cs:line 162
+--------------------------------------------------
+[2025-03-06 13:20:53Z] Transaction Error
+System.Exception: Error capturing PayPal order: Created
+   at PayPalService.CaptureOrder(String orderId) in C:\Users\Dim\source\repos\FBMS_CumulusFlights\FBMS_CumulusFlights\Services\PayPalService.cs:line 67
+   at Cumulus_Flights.Controllers.BookingController.ConfirmCheckout(CheckoutViewModel model) in C:\Users\Dim\source\repos\FBMS_CumulusFlights\FBMS_CumulusFlights\Controllers\BookingController.cs:line 181
+--------------------------------------------------
+[2025-03-06 13:29:37Z] General Error
+System.Exception: Error capturing PayPal order: Created
+   at PayPalService.CaptureOrder(String orderId) in C:\Users\Dim\source\repos\FBMS_CumulusFlights\FBMS_CumulusFlights\Services\PayPalService.cs:line 67
+   at Cumulus_Flights.Controllers.BookingController.ConfirmCheckout(CheckoutViewModel model) in C:\Users\Dim\source\repos\FBMS_CumulusFlights\FBMS_CumulusFlights\Controllers\BookingController.cs:line 160
+--------------------------------------------------
+[2025-03-06 13:32:47Z] General Error
+System.Exception: Error capturing PayPal order: Created
+   at PayPalService.CaptureOrder(String orderId) in C:\Users\Dim\source\repos\FBMS_CumulusFlights\FBMS_CumulusFlights\Services\PayPalService.cs:line 67
+   at Cumulus_Flights.Controllers.BookingController.ConfirmCheckout(CheckoutViewModel model) in C:\Users\Dim\source\repos\FBMS_CumulusFlights\FBMS_CumulusFlights\Controllers\BookingController.cs:line 160
+--------------------------------------------------
+[2025-03-06 14:40:53Z] General Error
+System.InvalidOperationException: This SqlTransaction has completed; it is no longer usable.
+   at Microsoft.Data.SqlClient.SqlTransaction.ZombieCheck()
+   at Microsoft.Data.SqlClient.SqlTransaction.Rollback()
+   at System.Data.Common.DbTransaction.RollbackAsync(CancellationToken cancellationToken)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalTransaction.RollbackAsync(CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalTransaction.RollbackAsync(CancellationToken cancellationToken)
+   at Cumulus_Flights.Controllers.BookingController.ConfirmCheckout(CheckoutViewModel model)
+--------------------------------------------------
+[2025-03-06 14:41:52Z] General Error
+System.InvalidOperationException: This SqlTransaction has completed; it is no longer usable.
+   at Microsoft.Data.SqlClient.SqlTransaction.ZombieCheck()
+   at Microsoft.Data.SqlClient.SqlTransaction.Rollback()
+   at System.Data.Common.DbTransaction.RollbackAsync(CancellationToken cancellationToken)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalTransaction.RollbackAsync(CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalTransaction.RollbackAsync(CancellationToken cancellationToken)
+   at Cumulus_Flights.Controllers.BookingController.ConfirmCheckout(CheckoutViewModel model) in C:\Users\Dim\source\repos\FBMS_CumulusFlights\FBMS_CumulusFlights\Controllers\BookingController.cs:line 270
+--------------------------------------------------
+[2025-03-06 14:49:30Z] General Error
+System.InvalidOperationException: This SqlTransaction has completed; it is no longer usable.
+   at Microsoft.Data.SqlClient.SqlTransaction.ZombieCheck()
+   at Microsoft.Data.SqlClient.SqlTransaction.Rollback()
+   at System.Data.Common.DbTransaction.RollbackAsync(CancellationToken cancellationToken)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalTransaction.RollbackAsync(CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalTransaction.RollbackAsync(CancellationToken cancellationToken)
+   at Cumulus_Flights.Controllers.BookingController.ConfirmCheckout(CheckoutViewModel model) in C:\Users\Dim\source\repos\FBMS_CumulusFlights\FBMS_CumulusFlights\Controllers\BookingController.cs:line 271
+--------------------------------------------------
+[2025-03-07 00:13:29Z] General Error
+System.InvalidOperationException: This SqlTransaction has completed; it is no longer usable.
+   at Microsoft.Data.SqlClient.SqlTransaction.ZombieCheck()
+   at Microsoft.Data.SqlClient.SqlTransaction.Rollback()
+   at System.Data.Common.DbTransaction.RollbackAsync(CancellationToken cancellationToken)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalTransaction.RollbackAsync(CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalTransaction.RollbackAsync(CancellationToken cancellationToken)
+   at Cumulus_Flights.Controllers.BookingController.ConfirmCheckout(CheckoutViewModel model) in C:\Users\Dim\source\repos\FBMS_CumulusFlights\FBMS_CumulusFlights\Controllers\BookingController.cs:line 264
+--------------------------------------------------

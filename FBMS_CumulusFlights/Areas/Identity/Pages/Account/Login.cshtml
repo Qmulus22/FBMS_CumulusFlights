@@ -1,0 +1,255 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Log in";
+    Layout = "_Layout"; // Ensure the layout is explicitly set
+}
+
+<style>
+    /* Scoped styles for the login page only */
+    .login-page {
+        background: #FBFBFB;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 2rem;
+    }
+
+    .login-page {
+        background: #FBFBFB;
+        background-size: cover;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 2rem;
+    }
+
+    .login-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        padding: 2.5rem;
+        width: 100%;
+        max-width: 450px;
+        text-align: center;
+        position: relative; /* For positioning the close button */
+    }
+
+        .login-card .logo-container {
+            display: flex;
+            justify-content: center; /* Center the logo horizontally */
+            /* margin-bottom: 0.5rem; /* Reduced space below the logo */
+        }
+
+        .login-card img {
+            width: 80px; /* Smaller logo */
+            height: auto; /* Maintain aspect ratio */
+        }
+
+        .login-card h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-top: 0; /* Remove default margin-top */
+            margin-bottom: 0.5rem; /* Adjust as needed */
+        }
+
+        .login-card p {
+            color: #718096;
+            margin-bottom: 2rem;
+        }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+        text-align: left;
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: #4a5568;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+    }
+
+        .form-control:focus {
+            border-color: #4299e1;
+            outline: none;
+        }
+
+    .btn-primary {
+        width: 100%;
+        padding: 0.75rem;
+        background-color: #4299e1;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            background-color: #3182ce;
+        }
+
+    .text-danger {
+        font-size: 0.875rem;
+        color: #e53e3e;
+    }
+
+    .form-check {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-check-input {
+        margin-right: 0.5rem;
+    }
+
+    .form-check-label {
+        color: #4a5568;
+    }
+
+    .text-center a {
+        color: #4299e1;
+        text-decoration: none;
+        font-size: 0.875rem;
+    }
+
+        .text-center a:hover {
+            text-decoration: underline;
+        }
+
+    .text-center span {
+        color: #cbd5e0;
+    }
+
+    /* Close button styles */
+    .close-button {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        font-size: 1.5rem;
+        color: #718096;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+        .close-button:hover {
+            color: #2d3748;
+        }
+
+    .captcha-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .captcha-box {
+        background-color: #e2e8f0;
+        padding: 0.75rem 1rem;
+        font-size: 1.25rem;
+        font-weight: bold;
+        border-radius: 8px;
+        letter-spacing: 3px;
+    }
+
+    .captcha-refresh {
+        background: none;
+        border: none;
+        color: #4299e1;
+        font-size: 1rem;
+        cursor: pointer;
+    }
+</style>
+
+<div class="login-page">
+    <div class="login-card">
+        <div class="close-button" onclick="window.history.back();">×</div>
+        <div class="logo-container">
+            <img src="/Images/CompanyLogo.png" alt="Cumulus Flights Logo">
+        </div>
+        <h1>Welcome Back</h1>
+        <p>Log in to manage your bookings</p>
+
+        <form id="account" method="post" onsubmit="return validateCaptcha(event)">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="Input.UserNameOrEmail" class="form-label">Username or Email</label>
+                <input asp-for="Input.UserNameOrEmail" class="form-control" autocomplete="username" />
+                <span asp-validation-for="Input.UserNameOrEmail" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.Password" class="form-label">Password</label>
+                <input asp-for="Input.Password" class="form-control" autocomplete="current-password" />
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+
+            <div class="captcha-container">
+                <span id="captchaText" class="captcha-box"></span>
+                <button type="button" class="captcha-refresh" onclick="generateCaptcha()">⟳ Refresh</button>
+            </div>
+            <input type="text" id="captchaInput" class="form-control" placeholder="Enter CAPTCHA" />
+            <span id="captchaError" class="text-danger"></span>
+
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" asp-for="Input.RememberMe" />
+                    <label class="form-check-label" asp-for="Input.RememberMe">Remember me</label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Log In</button>
+
+            <div class="text-center mt-4">
+                <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Create new account</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function generateCaptcha() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let captcha = '';
+            for (let i = 0; i < 6; i++) {
+                captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById("captchaText").textContent = captcha;
+        }
+
+        function validateCaptcha(event) {
+            const enteredCaptcha = document.getElementById("captchaInput").value;
+            const actualCaptcha = document.getElementById("captchaText").textContent;
+
+            if (enteredCaptcha !== actualCaptcha) {
+                event.preventDefault();
+                document.getElementById("captchaError").textContent = "Incorrect CAPTCHA. Try again.";
+                document.getElementById("captchaInput").value = '';
+                generateCaptcha();
+                return false;
+            }
+            return true;
+        }
+
+        window.onload = generateCaptcha;
+    </script>
+}

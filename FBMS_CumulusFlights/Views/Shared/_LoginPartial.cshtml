@@ -1,0 +1,72 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<ul class="flex items-center space-x-4">
+    @if (User.Identity.IsAuthenticated)
+    {
+        <li class="relative group">
+            <!-- Button to toggle dropdown -->
+            <button id="user-menu-button" class="flex items-center text-white hover:text-gray-200 transition focus:outline-none">
+                <i class="fas fa-user-circle mr-2 text-xl"></i> @User.Identity?.Name
+            </button>
+
+            <!-- Dropdown menu -->
+            <div id="user-menu" class="absolute hidden bg-white text-black rounded shadow-md right-0 mt-2 w-48">
+                <a class="block px-4 py-2 hover:bg-gray-100" asp-area="Identity" asp-page="/Account/Manage/Index">Profile</a>
+
+                <!-- Links based on UserType -->
+                @if (User.Claims.FirstOrDefault(c => c.Type == "UserType")?.Value == "Admin" ||
+               User.Claims.FirstOrDefault(c => c.Type == "UserType")?.Value == "SuperAdmin")
+                {
+                    <a class="block px-4 py-2 hover:bg-gray-100" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Administration</a>
+                }
+
+                @if (User.Claims.FirstOrDefault(c => c.Type == "UserType")?.Value == "NormalUser")
+                {
+                    <a class="block px-4 py-2 hover:bg-gray-100" asp-controller="Home" asp-action="UserDashboard">Dashboard</a>
+                }
+
+                <!-- Logout form -->
+                <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                    <button type="submit" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Log Out</button>
+                </form>
+            </div>
+        </li>
+    }
+    else
+    {
+        <li class="flex items-center space-x-4">
+            <a class="text-white hover:text-gray-200 transition flex items-center"
+               asp-area="Identity" asp-page="/Account/Login">
+                <i class="fas fa-sign-in-alt mr-2"></i> Log In
+            </a>
+
+            <span class="text-white">|</span>
+            <a class="text-white hover:text-gray-200 transition flex items-center"
+               asp-area="Identity" asp-page="/Account/Register">
+                <i class="fas fa-user-plus mr-2"></i> Sign Up
+            </a>
+        </li>
+    }
+</ul>
+
+<!-- JavaScript to handle dropdown toggle -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const userMenuButton = document.getElementById('user-menu-button');
+        const userMenu = document.getElementById('user-menu');
+
+        // Toggle dropdown on button click
+        userMenuButton.addEventListener('click', function () {
+            userMenu.classList.toggle('hidden');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function (event) {
+            if (!userMenu.contains(event.target) && !userMenuButton.contains(event.target)) {
+                userMenu.classList.add('hidden');
+            }
+        });
+    });
+</script>

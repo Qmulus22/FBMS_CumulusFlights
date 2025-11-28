@@ -1,0 +1,115 @@
+﻿@model List<FlightDealViewModel>
+@{
+    ViewData["Title"] = "Home - Cumulus Flights";
+}
+
+<style>
+    #hero {
+        transition: background-image 1s ease-in-out;
+    }
+</style>
+
+<!-- Hero Section -->
+<section id="hero" class="relative w-full h-[500px] md:h-[910px] bg-cover bg-center transition-opacity duration-1000">
+    <div class="absolute inset-0 bg-black opacity-50"></div>
+    <div class="absolute inset-0 flex flex-col justify-center items-center text-white text-center">
+        <h1 class="text-6xl font-bold mb-4">Welcome to Cumulus Flights</h1>
+        <p class="text-xl mb-6">Your gateway to easy and affordable flight bookings.</p>
+        <a href="/Booking" class="bg-yellow-500 text-black px-6 py-3 rounded-full text-lg hover:bg-yellow-400 transition">Book Your Flight</a>
+    </div>
+</section>
+
+
+<!-- About Section -->
+<section id="about" class="py-16 bg-white">
+    <div class="container mx-auto text-center">
+        <h2 class="text-3xl font-bold mb-4">About Us</h2>
+        <p class="text-lg mb-6">At Cumulus Flights, we offer a wide variety of flight options, ensuring you travel comfortably at the best prices. Whether you're booking a business trip or a vacation, we've got you covered!</p>
+        <a href="/Home/About" class="text-blue-500 hover:underline">Learn More</a>
+
+    </div>
+</section>
+
+
+
+
+
+<!-- Flight Deals Section with Filter/Search -->
+<section id="flight-deals" class="py-16 bg-gray-50">
+    <div class="container mx-auto text-center mb-8">
+        <h2 class="text-3xl font-bold mb-4">Flight Ticket Deals</h2>
+
+        <!-- Flight Deals Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            @foreach (var deal in Model)
+            {
+                <div class="bg-white rounded-lg shadow-md overflow-hidden p-4">
+                    <img id="flight-image-@deal.FlightId" class="w-full h-48 object-cover" />
+                    <h3 class="text-lg font-semibold mt-2">@deal.Destination</h3>
+                    <p class="text-gray-600">@deal.TravelDates</p>
+                    <p class="text-blue-800 font-bold mt-2">From <span class="text-2xl">@deal.Price</span></p>
+                    <a href="/Booking/Index?flightId=@deal.FlightId" class="bg-blue-800 text-white font-semibold py-2 px-4 rounded mt-4 w-full block text-center">BOOK NOW</a>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="py-16 bg-white">
+    <div class="container mx-auto text-center">
+        <h2 class="text-3xl font-bold mb-4">Contact Us</h2>
+        <p class="text-lg mb-6">Have any questions? We're here to help!</p>
+        <a href="/Contact" class="bg-blue-500 text-white px-6 py-3 rounded-full text-lg hover:bg-blue-400 transition">Get in Touch</a>
+    </div>
+</section>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const heroSection = document.getElementById("hero");
+        const images = [
+            "/Images/MikuMikuBeam.jpg",
+            "/Images/Umu.jpg",
+            "/Images/Singapore.jpg",
+            "/Images/China.jpg",
+            "/Images/Bohol.jpg"
+        ];
+        let index = 0;
+
+        function changeBackground() {
+            heroSection.style.backgroundImage = `url('${images[index]}')`;
+            index = (index + 1) % images.length; // Loops back to the first image
+        }
+
+        // Set the first background and start the cycle
+        changeBackground();
+        setInterval(changeBackground, 3000); // Change every 5 seconds
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const imagePaths = [
+            "/Images/China.jpg",
+            "/Images/Bohol.jpg",
+            "/Images/LandMark1.jpg",
+            "/Images/LandMark2.jpg",
+                "/Images/LandMark3.jpg",
+            "/Images/LandMark4.jpg",
+            "/Images/LandMark5.jpg",
+            "/Images/LandMark6.jpg",
+            "/Images/LandMark7.jpg",
+                    "/Images/LandMark8.jpg",
+                "/Images/LandMark9.jpg",
+                "/Images/LandMark10.jpg",
+        ];
+
+        function getRandomImagePath() {
+            const randomIndex = Math.floor(Math.random() * imagePaths.length);
+            return imagePaths[randomIndex];
+        }
+
+        document.querySelectorAll("[id^='flight-image-']").forEach(img => {
+            img.src = getRandomImagePath();
+        });
+    });
+</script>

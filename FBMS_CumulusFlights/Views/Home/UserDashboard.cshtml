@@ -1,0 +1,194 @@
+﻿@using FBMS_CumulusFlights.ViewModels
+
+@{
+    Layout = "_Layout";
+    ViewBag.Title = "My Flight Dashboard";
+}
+
+<style>
+    .user-dashboard {
+        padding: 25px;
+        background-color: #f8f9fa;
+        min-height: 100vh;
+    }
+
+    .user-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        max-width: 1400px; /* Set a maximum width for the user card */
+        margin: auto;
+    }
+
+    .trip-card {
+        background: linear-gradient(135deg, #3498db, #6c5ce7);
+        color: white;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+        .trip-card h3 {
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .trip-card .h4 {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+    .booking-status {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        display: inline-block;
+    }
+
+    .confirmed {
+        background: #e8f7ee;
+        color: #1abc9c;
+    }
+
+    .pending {
+        background: #fff4e5;
+        color: #f39c12;
+    }
+
+    .cancelled {
+        background: #ffe5e5;
+        color: #e74c3c;
+    }
+
+    .action-button {
+        transition: all 0.3s ease;
+        border: none;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 10px;
+    }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+        }
+
+    .quick-actions-container {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .quick-action {
+        padding: 10px;
+        border-radius: 8px;
+        background: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        width: fit-content;
+        text-align: center;
+    }
+
+    .table th, .table td {
+        text-align: left;
+        padding-right: 140px;
+
+    }
+</style>
+
+<div class="user-dashboard">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="trip-card">
+                <h3>Welcome back, @Model.FirstName!</h3>
+                <div class="d-flex justify-content-center align-items-center mt-3">
+                    <div>
+                        @if (Model.NextTrip != null)
+                        {
+                            <div class="h4">Your Next Trip</div>
+                            <div class="h5">@Model.NextTrip.FlightRoute</div>
+                            <small>@Model.NextTrip.DepartureDate.ToString("MMM dd, yyyy")</small>
+                        }
+                        else
+                        {
+                            <div class="h4">No upcoming trips</div>
+                        }
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="quick-actions-container mb-4">
+        <div class="quick-action">
+            <a href="/Booking/" class="list-group-item list-group-item-action d-flex align-items-center">
+                <i class="fas fa-search mr-3"></i>
+                Search Flights
+            </a>
+        </div>
+        <div class="quick-action">
+            <a href="/Home/UserDashboard" class="list-group-item list-group-item-action d-flex align-items-center">
+                <i class="fas fa-ticket-alt mr-3"></i>
+                My Bookings
+            </a>
+        </div>
+        <div class="quick-action">
+            <a href="/Home/UserDashboard" class="list-group-item list-group-item-action d-flex align-items-center">
+                <i class="fas fa-headset mr-3"></i>
+                Customer Support
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="user-card">
+                <h4 class="mb-4">Your Bookings</h4>
+                <div class="table-responsive">
+                    <table class="table table-hover table-sm">
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Flight</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Total Amount</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var reservation in Model.Reservations)
+                            {
+                                <tr>
+                                    <td>#@reservation.ReservationId</td>
+                                    <td>@reservation.FlightRoute<br><small>@reservation.FlightNumber</small></td>
+                                    <td>@reservation.DepartureDate.ToString("MMM dd, yyyy")</td>
+                                    <td><span class="booking-status @reservation.Status.ToLower()">@reservation.Status</span></td>
+                                    <td>Php. @reservation.TotalAmount.ToString("N2")</td>
+                                    <td>
+                                        <a href="@Url.Action("DownloadCombinedPdf", "Home", new { id = reservation.ReservationId })" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-download"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.action-button').forEach(button => {
+            button.addEventListener('click', () => {
+                button.classList.add('clicked');
+                setTimeout(() => button.classList.remove('clicked'), 300);
+            });
+        });
+    </script>
+}

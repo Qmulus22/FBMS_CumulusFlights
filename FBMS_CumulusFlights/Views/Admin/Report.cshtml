@@ -1,0 +1,292 @@
+﻿@model FBMS_CumulusFlights.ViewModels.ReportViewModel
+
+@{
+    Layout = "_AdminLayout";
+}
+
+@{
+    ViewBag.Title = "Flight Booking Reports";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    /* Expanded main container */
+    .report-container {
+        max-width: 1500px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    /* Widened filter section */
+    .report-filter {
+        background: #fff;
+        padding: 2rem;
+        border-radius: 12px;
+        margin: 0 auto 2.5rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        width: 100%;
+        max-width: 1200px;
+    }
+
+    /* Enlarged stat cards */
+    .stat-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 2rem;
+        margin: 1rem;
+        text-align: center;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        min-width: 300px;
+    }
+
+    .stat-value {
+        font-size: 2.4rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0.5rem 0;
+    }
+
+    .stat-label {
+        color: #7f8c8d;
+        font-size: 1.1rem;
+        letter-spacing: 0.5px;
+    }
+
+    /* Expanded chart container */
+    .chart-container {
+        background: #fff;
+        border-radius: 12px;
+        padding: 2.5rem;
+        margin: 2.5rem auto;
+        width: 100%;
+        max-width: 1100px;
+        height: 450px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+
+    /* Widened table */
+    .report-table {
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+        width: 100%;
+        max-width: 1400px;
+        margin: 2.5rem auto;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+
+    .table {
+        width: 100%;
+        margin: 0;
+    }
+
+        .table th,
+        .table td {
+            padding: 1.25rem 2rem;
+            font-size: 1.05rem;
+            text-align: center;
+        }
+
+    /* Larger form elements */
+    .form-control {
+        padding: 0.75rem 1.25rem;
+        font-size: 1.05rem;
+    }
+
+    /* Bigger buttons */
+    .btn {
+        padding: 0.75rem 2rem;
+        font-size: 1.1rem;
+    }
+
+    .report-container {
+        margin-left: 6rem; /* Increase margin on larger screens */
+    }
+</style>
+
+<div class="container-fluid report-container">
+    <!-- Report Filters -->
+    <div class="report-filter">
+        <form method="get">
+            <div class="row justify-content-center">
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <label class="form-label">Start Date</label>
+                    <input type="date" name="startDate" class="form-control"
+                           value="@ViewBag.StartDate.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <label class="form-label">End Date</label>
+                    <input type="date" name="endDate" class="form-control"
+                           value="@ViewBag.EndDate.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="col-lg-3 col-md-6 align-self-end mb-3">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-filter me-2"></i>Apply Filters
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row justify-content-center">
+        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="stat-card">
+                <div class="stat-value">@Model.TotalBookings</div>
+                <div class="stat-label">Total Bookings</div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="stat-card">
+                <div class="stat-value">₱@Model.TotalPaymentsReceived.ToString("N2")</div>
+                <div class="stat-label">Total Payments Received</div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="stat-card">
+                <div class="stat-value">@Model.AverageBookingsPerDay.ToString("N2")</div>
+                <div class="stat-label">Average Bookings Per Day</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Chart -->
+    <div class="chart-container">
+        <h4 class="mb-4">Booking Trends</h4>
+        <canvas id="trendChart"></canvas>
+    </div>
+
+    <!-- Data Table -->
+    <div class="report-table">
+        <table class="table table-hover">
+            <thead class="thead-light">
+                <tr>
+                    <th>Date</th>
+                    <th>Bookings</th>
+                    <th>Payment Received</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.ReportData)
+                {
+                    <tr>
+                        <td>@item.Date.ToString("d")</td>
+                        <td>@item.Bookings</td>
+                        <td>₱@item.PaymentReceived.ToString("N2")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Centered Export Options -->
+    <div class="text-center mt-5">
+        <button class="btn btn-danger btn-lg px-5" id="exportPdfButton">
+            <i class="fas fa-file-pdf me-2"></i>Export to PDF
+        </button>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Booking Trends Chart
+        const ctx = document.getElementById('trendChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.ReportData.Select(d => d.Date.ToString("d")))),
+                datasets: [{
+                    label: 'Bookings',
+                    data: @Html.Raw(Json.Serialize(Model.ReportData.Select(d => d.Bookings))),
+                    borderColor: '#3498db',
+                    tension: 0.4,
+                    fill: false
+                },
+                {
+                    label: 'Tickets Sold',
+                    data: @Html.Raw(Json.Serialize(Model.ReportData.Select(d => d.TicketsSold))),
+                    borderColor: '#2ecc71',
+                    tension: 0.4,
+                    fill: false,
+                    yAxisID: 'y1'
+                },
+                {
+                    label: 'Payment Received',
+                    data: @Html.Raw(Json.Serialize(Model.ReportData.Select(d => d.PaymentReceived))),
+                    borderColor: '#e74c3c',
+                    tension: 0.4,
+                    fill: false,
+                    yAxisID: 'y2'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Bookings'
+                        }
+                    },
+                    y1: {
+                        position: 'right',
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Tickets Sold'
+                        },
+                        grid: {
+                            drawOnChartArea: false
+                        }
+                    },
+                    y2: {
+                        position: 'right',
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Payment Received'
+                        },
+                        grid: {
+                            drawOnChartArea: false
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#exportPdfButton').click(function () {
+                // Get the start and end dates from the view bag
+                var startDate = '@ViewBag.StartDate.ToString("yyyy-MM-dd")';
+                var endDate = '@ViewBag.EndDate.ToString("yyyy-MM-dd")';
+
+                // Create a hidden form to submit the request
+                var form = $('<form>', {
+                    action: '@Url.Action("ExportToPdf", "Admin")', // Change to your controller name
+                    method: 'GET'
+                });
+
+                // Append the date fields
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'startDate',
+                    value: startDate
+                }).appendTo(form);
+
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'endDate',
+                    value: endDate
+                }).appendTo(form);
+
+                // Append the form to the body and submit it
+                form.appendTo('body').submit();
+            });
+        });
+    </script>
+}

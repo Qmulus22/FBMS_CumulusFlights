@@ -1,0 +1,337 @@
+﻿@using FBMS_CumulusFlights.Models.Enums
+@model BookingSummaryViewModel
+@using FBMS_CumulusFlights.ViewModels
+
+@{
+    ViewData["Title"] = "Booking Summary";
+    var arrivalDateTime = Model.Flight.DepartureDate.AddHours(Model.Flight.FlightDuration);
+}
+
+<section class="py-16 bg-gray-100">
+    <div class="container mx-auto flex">
+        <div class="w-full">
+            <h1 class="text-3xl font-bold text-blue-900 mb-6">Flight Booking Details</h1>
+
+            <!-- Flight Details Section -->
+            <div class="bg-white p-6 rounded-lg shadow-lg mb-8">
+                <h3 class="text-2xl font-semibold text-blue-900 mb-6">Selected Flight Details</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Flight Info Card -->
+                    <div class="bg-blue-100 p-4 rounded-lg shadow-inner">
+                        <p class="text-lg font-semibold text-gray-800"><i class="fas fa-plane-departure mr-2"></i> <strong>Flight Number:</strong> @Model.Flight.FlightNumber</p>
+                        <p class="text-lg font-semibold text-gray-800"><i class="fas fa-map-marker-alt mr-2"></i> <strong>Departure:</strong> @Model.Flight.OriginCity (@Model.Flight.OriginAirportCode)</p>
+                        <p class="text-lg font-semibold text-gray-800"><i class="fas fa-map-marker-alt mr-2"></i> <strong>Arrival:</strong> @Model.Flight.DestinationCity (@Model.Flight.DestinationAirportCode)</p>
+                        <p class="text-lg font-semibold text-gray-800"><i class="far fa-calendar-alt mr-2"></i> <strong>Departure Date:</strong> @Model.Flight.DepartureDate.ToString("MMM dd, yyyy")</p>
+                        <p class="text-lg font-semibold text-gray-800"><i class="far fa-clock mr-2"></i> <strong>Departure Time:</strong> @Model.Flight.DepartureDate.ToString("hh:mm tt")</p>
+                    </div>
+
+                    <!-- Additional Info Card -->
+                    <div class="bg-blue-100 p-4 rounded-lg shadow-inner">
+                        <p class="text-lg font-semibold text-gray-800"><i class="fas fa-dollar-sign mr-2"></i> <strong>Price:</strong> ₱@Model.Flight.Price.ToString("N2")</p>
+                        <p class="text-lg font-semibold text-gray-800"><i class="fas fa-hourglass-half mr-2"></i> <strong>Flight Duration:</strong> @FormatFlightDuration(Model.Flight.FlightDuration)</p>
+                        <p class="text-lg font-semibold text-gray-800"><i class="fas fa-plane mr-2"></i> <strong>Flight Type:</strong> @Model.Flight.FlightType</p>
+                        <p class="text-lg font-semibold text-gray-800"><i class="far fa-calendar-alt mr-2"></i> <strong>Arrival Date:</strong> @arrivalDateTime.ToString("MMM dd, yyyy")</p>
+                        <p class="text-lg font-semibold text-gray-800"><i class="far fa-clock mr-2"></i> <strong>Arrival Time:</strong> @arrivalDateTime.ToString("hh:mm tt")</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Passenger Information Section -->
+            <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+                <h3 class="text-2xl font-semibold text-blue-900 mb-4">Enter Passenger Information</h3>
+                <form id="bookingForm" asp-action="ProcessBooking" method="post">
+                    <input type="hidden" name="FlightId" value="@Model.Flight.FlightId" />
+                    <input type="hidden" name="Price" value="@Model.Flight.Price" />
+
+                    <div id="passengerFormContainer">
+                        @for (int i = 0; i < Model.Passengers.Count; i++)
+                        {
+                            <div class="passengerForm">
+                                <input type="hidden" name="Passengers[@i].Index" value="@Model.Passengers[i].Index" />
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <!-- Personal Info Fields -->
+                                    <div>
+                                        <label class="text-sm font-semibold text-gray-700">First Name</label>
+                                        <input type="text" class="w-full p-3 border border-gray-300 rounded-md"
+                                               name="Passengers[@i].FirstName" required>
+                                    </div>
+                                    <div>
+                                        <label class="text-sm font-semibold text-gray-700">Last Name</label>
+                                        <input type="text" class="w-full p-3 border border-gray-300 rounded-md"
+                                               name="Passengers[@i].LastName" required>
+                                    </div>
+                                    <!-- Passport Details -->
+                                    <div>
+                                        <label class="text-sm font-semibold text-gray-700">Passport Number</label>
+                                        <input type="text" class="w-full p-3 border border-gray-300 rounded-md"
+                                               name="Passengers[@i].PassportNumber" required>
+                                    </div>
+                                    <div>
+                                        <label class="text-sm font-semibold text-gray-700">Passport Country</label>
+                                        <input type="text" class="w-full p-3 border border-gray-300 rounded-md"
+                                               name="Passengers[@i].PassportCountry" required>
+                                    </div>
+                                    <!-- Date and Gender -->
+                                    <div>
+                                        <label class="text-sm font-semibold text-gray-700">Date of Birth</label>
+                                        <input type="date" class="w-full p-3 border border-gray-300 rounded-md"
+                                               name="Passengers[@i].DateOfBirth" required>
+                                    </div>
+                                    <div>
+                                        <label class="text-sm font-semibold text-gray-700">Gender</label>
+                                        <select class="w-full p-3 border border-gray-300 rounded-md"
+                                                name="Passengers[@i].Gender" required>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Flight Preferences -->
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                                    <div>
+                                        <label class="text-sm font-semibold text-gray-700">Baggage Weight (kg)</label>
+                                        <input type="number" class="w-full p-3 border border-gray-300 rounded-md"
+                                               name="Passengers[@i].BaggageWeight" required>
+                                    </div>
+                                    <div>
+                                        <label class="text-sm font-semibold text-gray-700">Baggage Type</label>
+                                        <select class="w-full p-3 border border-gray-300 rounded-md"
+                                                name="Passengers[@i].BaggageType" required>
+                                            @foreach (var baggageType in Enum.GetValues(typeof(BaggageTypeEnum)))
+                                            {
+ <option value="@baggageType.ToString()">@baggageType</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="text-sm font-semibold text-gray-700">Seat Class</label>
+                                        <select class="w-full p-3 border border-gray-300 rounded-md"
+                                                name="Passengers[@i].SeatClass" required>
+                                            @foreach (var seatClass in Enum.GetValues(typeof(SeatClassEnum)))
+                                            {
+                                                <option value="@seatClass.ToString()">@seatClass</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="text-sm font-semibold text-gray-700">Seat Type</label>
+                                        <select class="w-full p-3 border border-gray-300 rounded-md"
+                                                name="Passengers[@i].SeatType" required>
+                                            @foreach (var seatType in Enum.GetValues(typeof(SeatTypeEnum)))
+                                            {
+                                                <option value="@seatType.ToString()">@seatType</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Passenger Classification -->
+                                <div>
+                                    <label class="text-sm font-semibold text-gray-700">Passenger Classification</label>
+                                    <select class="w-full p-3 border border-gray-300 rounded-md"
+                                            name="Passengers[@i].PassengerClassification" required>
+                                        @foreach (var passengerType in Enum.GetValues(typeof(PassengerType)))
+                                        {
+                                            <option value="@passengerType.ToString()">@passengerType</option>
+                                        }
+                                    </select>
+                                </div>
+
+                                <button type="button" class="text-red-600 mt-2 removePassenger">Remove Passenger</button>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Button to Add More Passengers -->
+                    <div class="flex justify-center mt-4">
+                        <button type="button" class="w-12 h-12 bg-blue-900 text-white rounded-full flex items-center justify-center text-2xl" id="addPassengerBtn">
+                            <span>+</span>
+                        </button>
+                    </div>
+
+                    <!-- Checkout Button (Proceed to Next Page) -->
+                    <div class="flex justify-center mt-6">
+                        <button type="submit" class="flex items-center bg-green-600 text-white py-3 px-6 rounded-md text-xl">
+                            <span class="mr-2">Proceed to Checkout</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+<script>
+    let passengerCount = @Model.Passengers.Count;
+
+    $('#addPassengerBtn').on('click', function () {
+        passengerCount++;
+        const newPassengerForm = `
+            <div class="passengerForm">
+                <input type="hidden" name="Passengers[${passengerCount - 1}].Index" value="${passengerCount}" />
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="text-sm font-semibold text-gray-700">First Name</label>
+                        <input type="text" class="w-full p-3 border border-gray-300 rounded-md"
+                               name="Passengers[${passengerCount - 1}].FirstName" required>
+                    </div>
+                    <div>
+                        <label class="text-sm font-semibold text-gray-700">Last Name</label>
+                        <input type="text" class="w-full p-3 border border-gray-300 rounded-md"
+                               name="Passengers[${passengerCount - 1}].LastName" required>
+                    </div>
+                    <div>
+                        <label class="text-sm font-semibold text-gray-700">Passport Number</label>
+                        <input type="text" class="w-full p-3 border border-gray-300 rounded-md"
+                               name="Passengers[${passengerCount - 1}].PassportNumber" required>
+                    </div>
+                    <div>
+                        <label class="text-sm font-semibold text-gray-700">Passport Country</label>
+                        <input type="text" class="w-full p-3 border border-gray-300 rounded-md"
+                               name="Passengers[${passengerCount - 1}].PassportCountry" required>
+                    </div>
+                    <div>
+                        <label class="text-sm font-semibold text-gray-700">Date of Birth</label>
+                        <input type="date" class="w-full p-3 border border-gray-300 rounded-md"
+                               name="Passengers[${passengerCount - 1}].DateOfBirth" required>
+                    </div>
+                    <div>
+                        <label class="text-sm font-semibold text-gray-700">Gender</label>
+                        <select class="w-full p-3 border border-gray-300 rounded-md"
+                                name="Passengers[${passengerCount - 1}].Gender" required>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Additional Reservation Fields -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                    <div>
+                        <label class="text-sm font-semibold text-gray-700">Baggage Weight (kg)</label>
+                        <input type="number" class="w-full p-3 border border-gray-300 rounded-md"
+                               name="Passengers[${passengerCount - 1}].BaggageWeight" required>
+                    </div>
+                    <div>
+                        <label class="text-sm font-semibold text-gray-700">Baggage Type</label>
+                        <select class="w-full p-3 border border-gray-300 rounded-md"
+                                name="Passengers[${passengerCount - 1}].BaggageType" required>
+                            @foreach (var baggageType in Enum.GetValues(typeof(FBMS_CumulusFlights.Models.Enums.BaggageTypeEnum)))
+                            {
+                                <option value="@baggageType.ToString()">@baggageType</option>
+                            }
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-sm font-semibold text-gray-700">Seat Class</label>
+                        <select class="w-full p-3 border border-gray-300 rounded-md"
+                                name="Passengers[${passengerCount - 1}].SeatClass" required>
+                            @foreach (var seatClass in Enum.GetValues(typeof(FBMS_CumulusFlights.Models.Enums.SeatClassEnum)))
+                            {
+                                <option value="@seatClass.ToString()">@seatClass</option>
+                            }
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-sm font-semibold text-gray-700">Seat Type</label>
+                        <select class="w-full p-3 border border-gray-300 rounded-md"
+                                name="Passengers[${passengerCount - 1}].SeatType" required>
+                            @foreach (var seatType in Enum.GetValues(typeof(FBMS_CumulusFlights.Models.Enums.SeatTypeEnum)))
+                            {
+                                <option value="@seatType.ToString()">@seatType</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Passenger Classification -->
+                <div>
+                    <label class="text-sm font-semibold text-gray-700">Passenger Classification</label>
+                    <select class="w-full p-3 border border-gray-300 rounded-md"
+                            name="Passengers[${passengerCount - 1}].PassengerClassification" required>
+                        @foreach (var passengerType in Enum.GetValues(typeof(FBMS_CumulusFlights.Models.Enums.PassengerType)))
+                        {
+                            <option value="@passengerType.ToString()">@passengerType</option>
+                        }
+                    </select>
+                </div>
+
+                <button type="button" class="text-red-600 mt-2 removePassenger">Remove Passenger</button>
+            </div>
+        `;
+        $('#passengerFormContainer').append(newPassengerForm);
+    });
+
+    $(document).on('click', '.removePassenger', function () {
+        $(this).closest('.passengerForm').remove();
+        passengerCount--;
+
+        $('#passengerFormContainer .passengerForm').each(function (index) {
+            $(this).find('input, select').each(function () {
+                let name = $(this).attr('name');
+                if (name) {
+                    $(this).attr('name', name.replace(/\d+/, index));
+                }
+            });
+        });
+    });
+
+    @functions {
+        public string FormatFlightDuration(double flightDuration)
+        {
+            int hours = (int)flightDuration;
+            int minutes = (int)((flightDuration - hours) * 60);
+            return $"{hours} hours {minutes} minutes";
+        }
+    }
+</script>
+
+<style>
+    /* General Styling */
+    body {
+        font-family: 'Arial', sans-serif;
+    }
+
+    /* Flexbox container for layout */
+    .checkout-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 2rem;
+        padding: 2rem;
+    }
+
+    /* Card Styling */
+    .bg-blue-100 {
+        background-color: #e3f2fd;
+    }
+
+    .shadow-inner {
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Icon Styling */
+    .fas, .far {
+        margin-right: 0.5rem;
+    }
+
+    /* Button Styling */
+    .bg-blue-900, .bg-green-600 {
+        transition: background-color 0.3s;
+    }
+
+    .bg-blue-900:hover {
+        background-color: #218838;
+    }
+
+    .bg-green-600:hover {
+        background-color: #1a911a;
+    }
+</style>
